@@ -1,6 +1,13 @@
 package com.letsservice.calllog.features.main;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +16,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -25,6 +33,14 @@ import timber.log.Timber;
 public class MainActivity extends BaseActivity implements MainMvpView, ErrorView.ErrorListener {
 
     private static final int POKEMON_COUNT = 20;
+    private static final int ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1;
+    String[] permissions= new String[]{
+            Manifest.permission.READ_CALL_LOG,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.PROCESS_OUTGOING_CALLS,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.READ_EXTERNAL_STORAGE};
     //
     @Inject
     PokemonAdapter pokemonAdapter;
@@ -54,14 +70,18 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.primary);
         swipeRefreshLayout.setColorSchemeResources(R.color.white);
-        swipeRefreshLayout.setOnRefreshListener(() -> mainPresenter.getPokemon(POKEMON_COUNT));
+        swipeRefreshLayout.setOnRefreshListener(() -> mainPresenter.getCalls());
+
+
 
         pokemonRecycler.setLayoutManager(new LinearLayoutManager(this));
         pokemonRecycler.setAdapter(pokemonAdapter);
         pokemonClicked();
         errorView.setErrorListener(this);
 
-        mainPresenter.getPokemon(POKEMON_COUNT);
+        if(checkSelfPermission()){
+            mainPresenter.getCalls();
+        }
     }
 
     private void pokemonClicked() {
@@ -86,6 +106,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     public int getLayout() {
         return R.layout.activity_main;
     }
+
 
     @Override
     protected void inject(ActivityComponent activityComponent) {
@@ -138,7 +159,59 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     }
 
     @Override
+    public ContentResolver getResolver() {
+        ContentResolver cR = this.getContentResolver();
+        return cR;
+    }
+
+    @Override
+    public Activity getViewActivity() {
+        return this;
+    }
+
+    @Override
+    public boolean checkSelfPermission() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p:permissions) {
+            result = ContextCompat.checkSelfPermission(this,p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),ASK_MULTIPLE_PERMISSION_REQUEST_CODE );
+            return false;
+        }
+        return true;
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case ASK_MULTIPLE_PERMISSION_REQUEST_CODE:{
+                if (grantResults.length > 0) {
+                    String permissionsDenied = "";
+                    for (String per : permissions) {
+                        if(grantResults[0] == PackageManager.PERMISSION_DENIED){
+                            permissionsDenied += "\n" + per;
+
+                        }
+
+                    }
+                    // Show permissionsDenied
+                    Toast.makeText(this, "Granted", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
     public void onReloadData() {
-        mainPresenter.getPokemon(POKEMON_COUNT);
+        mainPresenter.getCalls();
     }
 }
