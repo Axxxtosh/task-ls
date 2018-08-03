@@ -28,18 +28,8 @@ import timber.log.Timber;
  */
 
 public class TService extends Service {
-    MediaRecorder recorder= null;;
+    MediaRecorder recorder= null;
     File audiofile;
-    String name, phonenumber;
-    String audio_format;
-    public String Audio_Type;
-    int audioSource;
-    Context context;
-    private Handler handler;
-    Timer timer;
-    Boolean offHook = false, ringing = false;
-    Toast toast;
-    Boolean isOffHook = false;
     private boolean recordstarted = false;
 
     private static final String ACTION_IN = "android.intent.action.PHONE_STATE";
@@ -111,7 +101,7 @@ public class TService extends Service {
         this.br_call = new CallBr();
         this.registerReceiver(this.br_call, filter);
 
-        return super.onStartCommand(intent, flags, startId);
+        return START_REDELIVER_INTENT;
     }
 
     public class CallBr extends BroadcastReceiver {
