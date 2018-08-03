@@ -113,7 +113,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
                 intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Click on Activate button to secure your application.");
                 startActivityForResult(intent, REQUEST_CODE);
             } else {
-                 mDPM.lockNow();
+                // mDPM.lockNow();
                 Intent intent = new Intent(MainActivity.this,
                 TService.class);
                 startService(intent);
