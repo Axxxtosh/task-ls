@@ -41,7 +41,8 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.PROCESS_OUTGOING_CALLS,
             Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.READ_EXTERNAL_STORAGE};
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CALL_PHONE};
     //
     @Inject
     CallLogAdapter callLogAdapter;
@@ -189,7 +190,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
                         }
 
                     }
-                    // Show permissionsDenied
+                    mainPresenter.getCalls();
                     Toast.makeText(this, "Granted", Toast.LENGTH_SHORT).show();
                 }
                 return;

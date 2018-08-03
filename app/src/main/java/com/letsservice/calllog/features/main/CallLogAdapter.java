@@ -1,9 +1,14 @@
 package com.letsservice.calllog.features.main;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -70,13 +75,40 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.PokemonV
         TextView nameDate;
         @BindView(R.id.text_type)
         TextView nameType;
+        @BindView(R.id.ll_call)
+        LinearLayout callEntry;
+        @BindView(R.id.btn_call)
+        Button call;
+        @BindView(R.id.btn_show)
+        Button show;
 
         private String pokemon;
 
         PokemonViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            /*itemView.setOnClickListener(v -> pokemonClickSubject.onNext(pokemon));*/
+            call.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("MissingPermission")
+                @Override
+                public void onClick(View view) {
+
+                  String number =callList.get(getAdapterPosition()).getNumber();
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" +number));
+                   view.getContext().startActivity(intent);
+                }
+            });
+            show.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("MissingPermission")
+                @Override
+                public void onClick(View view) {
+
+                    String number =callList.get(getAdapterPosition()).getNumber();
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" +number));
+                    view.getContext().startActivity(intent);
+                }
+            });
         }
 
         void onBind(String name,String number,String date,String type) {
