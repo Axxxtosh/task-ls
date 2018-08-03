@@ -12,13 +12,15 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--//Call-->
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.STORAGE" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
 
     <application
         android:name="com.letsservice.calllog.MvpStarterApplication"
@@ -56,6 +58,27 @@
         <activity
             android:name="com.letsservice.calllog.features.detail.MapsSampleActivity"
             android:label="@string/title_activity_maps_sample" />
+
+        <!--for recording-->
+        <receiver
+            android:name="com.letsservice.calllog.features.main.DeviceAdminDemo"
+            android:description="@string/device_description"
+            android:label="@string/device_admin_label"
+            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/my_admin" />
+
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+                <action android:name="android.app.action.DEVICE_ADMIN_DISABLED" />
+                <action android:name="android.app.action.DEVICE_ADMIN_DISABLE_REQUESTED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".features.main.TService" >
+        </service>
     </application>
 
 </manifest>
