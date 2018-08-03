@@ -5,11 +5,12 @@ import android.content.ContentResolver;
 
 import java.util.List;
 
+import com.letsservice.calllog.data.model.response.Call;
 import com.letsservice.calllog.features.base.MvpView;
 
 public interface MainMvpView extends MvpView {
 
-    void showPokemon(List<String> pokemon);
+    void showPokemon(List<Call> callList);
 
     void showProgress(boolean show);
 

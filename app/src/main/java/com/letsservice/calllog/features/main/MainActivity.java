@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import com.letsservice.calllog.R;
+import com.letsservice.calllog.data.model.response.Call;
 import com.letsservice.calllog.features.base.BaseActivity;
 import com.letsservice.calllog.features.common.ErrorView;
 import com.letsservice.calllog.features.detail.DetailActivity;
@@ -43,7 +44,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
             Manifest.permission.READ_EXTERNAL_STORAGE};
     //
     @Inject
-    PokemonAdapter pokemonAdapter;
+    CallLogAdapter callLogAdapter;
     @Inject
     MainPresenter mainPresenter;
 
@@ -75,7 +76,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
 
 
         pokemonRecycler.setLayoutManager(new LinearLayoutManager(this));
-        pokemonRecycler.setAdapter(pokemonAdapter);
+        pokemonRecycler.setAdapter(callLogAdapter);
         pokemonClicked();
         errorView.setErrorListener(this);
 
@@ -85,21 +86,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     }
 
     private void pokemonClicked() {
-        Disposable disposable =
-                pokemonAdapter
-                        .getPokemonClick()
-                        .subscribe(
-                                pokemon ->
-                                        startActivity(DetailActivity.getStartIntent(this, pokemon)),
-                                throwable -> {
-                                    Timber.e(throwable, "Pokemon click failed");
-                                    Toast.makeText(
-                                            this,
-                                            R.string.error_something_bad_happened,
-                                            Toast.LENGTH_LONG)
-                                            .show();
-                                });
-        mainPresenter.addDisposable(disposable);
+        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -124,8 +111,8 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     }
 
     @Override
-    public void showPokemon(List<String> pokemon) {
-        pokemonAdapter.setPokemon(pokemon);
+    public void showPokemon(List<Call> callList) {
+        callLogAdapter.setPokemon(callList);
         pokemonRecycler.setVisibility(View.VISIBLE);
         swipeRefreshLayout.setVisibility(View.VISIBLE);
     }
@@ -134,7 +121,7 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     public void showProgress(boolean show) {
         if (show) {
             if (pokemonRecycler.getVisibility() == View.VISIBLE
-                    && pokemonAdapter.getItemCount() > 0) {
+                    && callLogAdapter.getItemCount() > 0) {
                 swipeRefreshLayout.setRefreshing(true);
             } else {
                 progressBar.setVisibility(View.VISIBLE);

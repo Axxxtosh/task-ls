@@ -14,23 +14,24 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.letsservice.calllog.R;
+import com.letsservice.calllog.data.model.response.Call;
+
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
-public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonViewHolder> {
+public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.PokemonViewHolder> {
 
-    private List<String> pokemonList;
-    private Subject<String> pokemonClickSubject;
+    private List<Call> callList;
 
     @Inject
-    PokemonAdapter() {
-        pokemonClickSubject = PublishSubject.create();
-        pokemonList = Collections.emptyList();
+    CallLogAdapter() {
+
+        callList = Collections.emptyList();
     }
 
-    public void setPokemon(List<String> pokemon) {
-        this.pokemonList = pokemon;
+    public void setPokemon(List<Call> callList) {
+        this.callList = callList;
         notifyDataSetChanged();
     }
 
@@ -44,37 +45,47 @@ public class PokemonAdapter extends RecyclerView.Adapter<PokemonAdapter.PokemonV
 
     @Override
     public void onBindViewHolder(PokemonViewHolder holder, int position) {
-        String pokemon = this.pokemonList.get(position);
-        holder.onBind(pokemon);
+        String number = this.callList.get(position).getNumber();
+        String name= this.callList.get(position).getName();
+        String date= this.callList.get(position).getCallDate();
+        String type= this.callList.get(position).getType();
+
+        holder.onBind(name,number,date,type);
     }
 
     @Override
     public int getItemCount() {
-        return pokemonList.size();
+        return callList.size();
     }
 
-    Observable<String> getPokemonClick() {
-        return pokemonClickSubject;
-    }
+
 
     class PokemonViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_name)
         TextView nameText;
+        @BindView(R.id.text_number)
+        TextView nameNumber;
+        @BindView(R.id.text_date)
+        TextView nameDate;
+        @BindView(R.id.text_type)
+        TextView nameType;
 
         private String pokemon;
 
         PokemonViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(v -> pokemonClickSubject.onNext(pokemon));
+            /*itemView.setOnClickListener(v -> pokemonClickSubject.onNext(pokemon));*/
         }
 
-        void onBind(String pokemon) {
-            this.pokemon = pokemon;
-            nameText.setText(
-                    String.format(
-                            "%s%s", pokemon.substring(0, 1).toUpperCase(), pokemon.substring(1)));
+        void onBind(String name,String number,String date,String type) {
+
+            nameText.setText((name!=null)? name : number);
+            nameNumber.setText(number);
+            nameDate.setText(date);
+            nameType.setText(type);
+
         }
     }
 }
