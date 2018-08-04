@@ -10,20 +10,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import java.util.Collections;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.letsservice.calllog.R;
 import com.letsservice.calllog.data.model.response.Call;
 
-import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
 
 public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.PokemonViewHolder> {
 
@@ -81,9 +75,6 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.PokemonV
         Button call;
         @BindView(R.id.btn_show)
         Button show;
-
-        private String pokemon;
-
         PokemonViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -104,8 +95,8 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.PokemonV
                 public void onClick(View view) {
 
                     String number =callList.get(getAdapterPosition()).getNumber();
-                    Intent intent = new Intent(Intent.ACTION_CALL);
-                    intent.setData(Uri.parse("tel:" +number));
+                    Intent intent= new Intent(view.getContext(),RecordingListActivity.class);
+                    intent.putExtra("number",number);
                     view.getContext().startActivity(intent);
                 }
             });

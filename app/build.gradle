@@ -87,7 +87,8 @@ android {
                 systemProperty 'robolectric.logging', 'stdout'
                 // Print test details in the terminal (or CI).
                 testLogging {
-                    events 'passed', 'skipped', 'failed', 'standardOut', 'standardError' // Log out test results to console
+                    events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+                    // Log out test results to console
                     exceptionFormat 'full'
                 }
             }
@@ -113,6 +114,7 @@ dependencies {
     implementation rxJavaLibs
     implementation otherLibs
 
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     debugImplementation debugLibs
     releaseImplementation releaseLibs
 

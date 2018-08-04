@@ -133,10 +133,6 @@ public class MainActivity extends BaseActivity implements MainMvpView, ErrorView
     }
     //For recording
 
-    private void pokemonClicked() {
-        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public int getLayout() {
         return R.layout.activity_main;
