@@ -58,7 +58,7 @@ public class CallListAdapter extends RecyclerView.Adapter<CallListAdapter.CallVi
                     Timber.d("Clicked "+callList.get(position));
                     String filePath = callList.get(position);
                     MediaPlayer mPlayer = new MediaPlayer();
-                    mPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+                    mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
                     FileInputStream FIS = null;
                     try {
