@@ -1,7 +1,10 @@
 package com.letsservice.calllog.features.main;
 
 import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.Toast;
 
 import com.letsservice.calllog.R;
 
+import java.io.FileInputStream;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,14 +57,20 @@ public class CallListAdapter extends RecyclerView.Adapter<CallListAdapter.CallVi
                 public void onClick(View view) {
                     Timber.d("Clicked "+callList.get(position));
                     String filePath = callList.get(position);
-                    mediaPlayer = new MediaPlayer();
-                    try{
-                    mediaPlayer.setDataSource(filePath);
-                    mediaPlayer.prepare();}
-                    catch (Exception e){
-                        Timber.d("play problem");
+                    MediaPlayer mPlayer = new MediaPlayer();
+                    mPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+
+                    FileInputStream FIS = null;
+                    try {
+                        FIS = new FileInputStream(filePath);
+                        mPlayer.setDataSource(FIS.getFD());
+                        mPlayer.prepare();
                     }
-                    mediaPlayer.start();
+                    catch( Exception e )
+                    {
+                        e.printStackTrace();
+                    }
+                    mPlayer.start();
                 }
             });
     }
